@@ -1,0 +1,59 @@
+=== faiss KMeans objective (sum of squared distances on the 1,048,576-point training sample)
+  level 0: iter 0 714,022 -> iter 49 397,981   (50 iterations)
+  level 1: iter 0 463,580 -> iter 49 329,765   (50 iterations)
+  level 2: iter 0 328,512 -> iter 49 287,983   (50 iterations)
+
+=== files
+  external/KuaiSearch/recall/data/embeddings/codes_512[512, 512, 512]_2048.npy  159,218,960 B  sha256 b7c4ee04de1a8e4410d49dbd7f191cf720cddcd7c900eb0ff2f0f1d20dee7648
+    shape (3, 6634118) dtype int64
+  external/KuaiSearch/recall/data/embeddings/item_code.pt  212,293,367 B  sha256 b10614b3b6cd5ce0cf304f71de4dc85238a6682e1625013e180438ad333faf26
+    type Tensor shape (6634118, 4) dtype torch.int64 device cpu
+  item_code[:, :3] == codes.T : True
+
+=== codebook usage (codes in [0, 511])
+  level 0: range [0, 511]  used 512/512  items per code min 2,195 / p50 11,801 / max 69,558
+  level 1: range [0, 511]  used 512/512  items per code min 1 / p50 11,786 / max 53,238
+  level 2: range [0, 511]  used 512/512  items per code min 1 / p50 11,719 / max 56,091
+
+=== 4th code (dedup)
+  equals independent recomputation (occurrence # of the 3-code tuple, row order): True
+  distinct 3-code tuples: 1,996,091 of 6,634,118 items  (30.09%)
+  items with dedup > 0 (collide with an earlier item): 4,638,027  (69.91%)  <- duplicates_rate computed (not printed) by code_check()
+  items in a tuple shared by >1 item: 5,461,287  (82.32%)
+  max dedup value: 3,473   (largest group size 3,474)
+  dedup value p50 / p90 / p99 / p99.9: [2, 41, 271, 1176]
+  items with dedup >= 512 (would not fit a 512-token 4th level): 25,765
+  group sizes: {np.int64(1): 1172831, np.int64(2): 320120, np.int64(3): 146587, np.int64(4): 83568, np.int64(5): 54094, np.int64(6): 37927, np.int64(7): 27763, np.int64(8): 20968, np.int64(9): 16599, np.int64(10): 115634}  (10 = 10 or more)
+  4-code tuples unique: True
+
+=== relation with duplicate titles
+  items whose title already appeared earlier: 1,547,887  (23.33%)
+    of those, dedup > 0: 1,547,887  (100.00%)
+  collisions (dedup > 0) NOT explained by a repeated title: 3,090,140  (46.58% of items)
+
+  largest group: code [78, 375, 134]  3,474 items; 5 titles:
+    row 2211 | item 4860532 | 闪电购女装120
+    row 2826 | item 1898828 | 闪电购女装149
+    row 4328 | item 2773076 | 闪电购女装160
+    row 10896 | item 5415480 | 闪电购女装118
+    row 12255 | item 5450768 | 闪电购女装130
+
+=== 3 rows (row | item_id | title | item_code)
+  0 | 3359347 | 【香榭丽舍】高级静奢风法式长款遮肉显瘦进口貂皮大衣 | [481, 12, 494, 0]
+  1 | 5096459 | 福利金钻绒床边地毯防尘免洗 | [209, 191, 223, 0]
+  2 | 5935061 | 三莎夏季舞蹈鞋女式网面广场舞蹈 | [304, 329, 370, 0]
+
+=== notes
+  The 4th code is not bounded by 512: codes are written as plain text "c0 c1 c2 dup"
+  (process4gr.py) and tokenized with the mT5 tokenizer; decoding is constrained by a Trie
+  built from the existing code strings (recall/GR/train.py build_trie). So dedup values
+  up to 3,473 add tokens but do not overflow a vocabulary.
+  Expected lower bound for collisions was the repeated-title share: 23.33% of items
+  (items whose title already appeared). Observed 69.91%: 46.58% of items collide with
+  a different title -> limited resolution of RQ-KMeans 3x512 on these embeddings.
+
+=== run
+  20261110-115513_faiss_kmeans_quantize.out: runtime 00:19:02, exit 0, peak RSS 40,203,144 kB (~40.2 GB)
+  5a faiss_kmeans ~12 min (3 levels x 50 iters, ~6 s/iter on 28-core CPU, faiss-cpu 1.15.1)
+  5b code_check 07:00 (414,633 iters, ~990 it/s)
+  config: k=[512,512,512], niter=50, max_points_per_centroid=2048, faiss default seed
