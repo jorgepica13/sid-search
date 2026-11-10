@@ -1,0 +1,11 @@
+# datos y artefactos pesados
+data/**
+!data/**/.gitkeep
+*.npy
+*.pt
+*.safetensors
+*.bin
+checkpoints/
+wandb/
+__pycache__/
+.ipynb_checkpoints/

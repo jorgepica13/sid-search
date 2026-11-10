@@ -1,0 +1,3 @@
+[submodule "external/KuaiSearch"]
+	path = external/KuaiSearch
+	url = https://github.com/jorgepica13/KuaiSearch.git
