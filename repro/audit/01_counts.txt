@@ -1,0 +1,76 @@
+=== items_lite
+  rows                                                    6,634,118   paper 6,634,118  OK
+  unique item_id                                          6,634,118
+  item_id range                                        [1, 6,634,118]
+  item_id sorted ascending in file                     False
+  empty item_title (pipeline skips these!)                        0
+  title length (chars) mean / p50 / p99 / max          28.5 / 30 / 41 / 59
+  unique brand_id                                           135,775
+  unique seller_id                                          460,943
+  unique category_level1_id                                      95
+  unique category_level2_id                                   1,074
+  unique category_level3_id                                   6,470
+  category_level1_name == UNKNOWN                               1  (0.00%)
+  category_level2_name == UNKNOWN                             102  (0.00%)
+  category_level3_name == UNKNOWN                       1,080,224  (16.28%)
+  first 3 rows:
+    {"item_id":3359347,"item_title":"【香榭丽舍】高级静奢风法式长款遮肉显瘦进口貂皮大衣","brand_id":1,"brand_name":"金粟兰","seller_id":1,"seller_name":"施施高端皮草工厂店","category_level1_id":1,"category_level1_name":"女装","category_level2_id":1,"category_level2_name":"皮草","category_level3_id":0,"category_level3_name":"UNKNOWN"}
+    {"item_id":5096459,"item_title":"福利金钻绒床边地毯防尘免洗","brand_id":2,"brand_name":"其他/other","seller_id":2,"seller_name":"爱家家居地毯","category_level1_id":2,"category_level1_name":"家纺","category_level2_id":2,"category_level2_name":"地毯地垫","category_level3_id":1,"category_level3_name":"地毯"}
+    {"item_id":5935061,"item_title":"三莎夏季舞蹈鞋女式网面广场舞蹈","brand_id":3,"brand_name":"GUARCI","seller_id":3,"seller_name":"漯河邦杰舞蹈鞋","category_level1_id":3,"category_level1_name":"瑜伽舞蹈/健身/体育/护具","category_level2_id":3,"category_level2_name":"舞蹈/健美操/体操用品","category_level3_id":2,"category_level3_name":"广场舞蹈"}
+
+=== users_lite
+  rows                                                      102,086   paper 102,086  OK
+  unique user_id                                            102,086
+  first 3 rows:
+    {"user_id":33407,"gender":"M","age_bucket":"31-40","fre_country":"中国","fre_province":"辽宁","fre_city":"鞍山"}
+    {"user_id":43714,"gender":"F","age_bucket":"31-40","fre_country":"中国","fre_province":"天津","fre_city":"天津"}
+    {"user_id":79878,"gender":"F","age_bucket":"24-30","fre_country":"中国","fre_province":"吉林","fre_city":"松原"}
+
+=== recall_lite
+  rows (= sessions)                                         555,553   paper 555,553  OK
+  unique session_id                                         555,553
+  duplicate session_id rows                                       0
+  unique user_id                                            102,086
+  user_id not in users_lite                                       0
+  users_lite users with no recall session                         0
+  rows with empty query                                           0
+  split values                                         {'train': 539012, 'test': 16541}
+  [test]
+    rows                                                     16,541
+    kept by process.py (>=1 click or purchase)                8,468
+    dropped (no interaction)                                  8,073
+    kept share                                         51.19%
+    unique query strings (kept)                               6,845
+    relevant items/session mean / p50 / p99 / max      2.22 / 1 / 11 / 47
+    qrel pairs (session, item)                               18,805
+    time_index range                                   [936,726, 965,265]
+  [train]
+    rows                                                    539,012
+    kept by process.py (>=1 click or purchase)              287,093
+    dropped (no interaction)                                251,919
+    kept share                                         53.26%
+    unique query strings (kept)                             162,915
+    relevant items/session mean / p50 / p99 / max      2.31 / 1 / 12 / 192
+    qrel pairs (session, item)                              663,423
+    time_index range                                   [1, 936,724]
+  test query strings also seen in train                       2,672
+    share of unique test queries                       39.04%
+  relevant items NOT in items_lite                                0
+    of all relevant (session,item) pairs               0.00%
+  impressed items NOT in items_lite                               0
+    of all impressions                                 0.00%
+  purchased items not in clicked                              1,438
+    of all purchases                                   2.82%
+  first 3 rows:
+    {"user_id":1,"session_id":1,"impressed_item_ids":"<list len=188: [38, 39, 40, 41, 42]...>","clicked_item_ids":"<list len=16: [58, 63, 76, 80, 85]...>","purchased_item_ids":"<list len=0: []>","time_index":384565,"query":"广场舞服装女高档洋气","split":"train"}
+    {"user_id":2,"session_id":2,"impressed_item_ids":"<list len=143: [259, 260, 261, 262, 263]...>","clicked_item_ids":"<list len=8: [259, 277, 297, 318, 323]...>","purchased_item_ids":"<list len=0: []>","time_index":279492,"query":"雅鹿正品官方旗舰店运动鞋","split":"train"}
+    {"user_id":3,"session_id":3,"impressed_item_ids":"<list len=56: [437, 438, 439, 440, 441]...>","clicked_item_ids":"<list len=4: [464, 467, 469, 487]>","purchased_item_ids":"<list len=0: []>","time_index":295674,"query":"拖鞋","split":"train"}
+
+=== relevance
+  rows                                                       46,422
+  split values                                         {'train': 41779, 'test': 4643}
+  (split, score) counts                                {('test', 0): 599, ('test', 1): 900, ('test', 2): 1607, ('test', 3): 1537, ('train', 0): 5497, ('train', 1): 7936, ('train', 2): 14165, ('train', 3): 14181}
+  first 3 rows:
+    {"query":"情侣diy情绪盒子","item_title":"现货】创意高颜值磁吸盒子翻盖礼物情侣惊喜情绪盒子贴纸emoj表情","brand":"无品牌","seller_name":"喜宴鑫生活馆","attr_value":"浙江,创意,卡通动漫,14岁以上,通用,无品牌","score":3,"split":"train"}
+    {"query":"水彩笔软头水性可水洗","item_title":"直液式丙烯马克笔软头不透色水性水彩笔防水DIY涂鸦彩色绘画笔小","brand":"无品牌","seller_name":"利聪优品","attr_value":"11-24支,6mm,圆头,简约,水性笔,无品牌","score":2,"split":"train"}
+    {"query":"日奈绘画","item_title":"节奏盒子描摹本画画本儿童线稿手绘描摹控笔练习绘画本图画本涂色","brand":"艺丛","seller_name":"彦和文具专营店","attr_value":"通用,否,8岁（含）—14岁（不含）,艺丛","score":1,"split":"train"}
