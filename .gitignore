@@ -9,3 +9,6 @@ checkpoints/
 wandb/
 __pycache__/
 .ipynb_checkpoints/
+
+# logs de scripts/run_job.sh
+logs/
