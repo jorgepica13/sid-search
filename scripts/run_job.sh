@@ -2,6 +2,8 @@
 # Launch a long job detached from the terminal, log it, and notify via Telegram.
 #
 #   scripts/run_job.sh [-C DIR] [-n NAME] [-e ENV] [--fg] -- CMD [ARGS...]
+#   scripts/run_job.sh [--fg]        # no command: runs the job defined in ./job.sh
+#                                    # (this is what `runbg` does inside this repo)
 #
 #   -C DIR   working directory, relative to the repo root (default: repo root).
 #            KuaiSearch scripts use hardcoded relative paths: use -C external/KuaiSearch
@@ -27,9 +29,11 @@ REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SELF="$REPO/scripts/run_job.sh"
 TELEGRAM_ENV="$HOME/.telegram_env"
 
-usage() { sed -n '2,15p' "$SELF" | sed 's/^# \{0,1\}//'; exit "${1:-1}"; }
+JOB_FILE="$REPO/job.sh"
 
-WORKDIR="." NAME="" ENV_NAME="sid-search" FG=0
+usage() { sed -n '2,17p' "$SELF" | sed 's/^# \{0,1\}//'; exit "${1:-1}"; }
+
+WORKDIR="" NAME="" ENV_NAME="" FG=0
 while [ $# -gt 0 ]; do
   case "$1" in
     -C) WORKDIR="$2"; shift 2 ;;
@@ -41,8 +45,22 @@ while [ $# -gt 0 ]; do
     *) echo "Unknown option: $1 (did you forget '--' before the command?)" >&2; usage ;;
   esac
 done
-[ $# -gt 0 ] || { echo "Missing command after '--'" >&2; usage; }
-CMD=("$@")
+if [ $# -gt 0 ]; then
+  CMD=("$@")
+  JOB_SOURCE="command line"
+else
+  # No command given: take the job from job.sh (WORKDIR, NAME, ENV_NAME, CMD=(...)).
+  # Command-line -C/-n/-e still override what job.sh says.
+  [ -f "$JOB_FILE" ] || { echo "No command after '--' and no $JOB_FILE" >&2; usage; }
+  cli_workdir="$WORKDIR" cli_name="$NAME" cli_env="$ENV_NAME"
+  CMD=()
+  # shellcheck disable=SC1090
+  source "$JOB_FILE"
+  WORKDIR="${cli_workdir:-${WORKDIR:-}}" NAME="${cli_name:-${NAME:-}}" ENV_NAME="${cli_env:-${ENV_NAME:-}}"
+  [ ${#CMD[@]} -gt 0 ] || { echo "$JOB_FILE does not define CMD=(...)" >&2; exit 1; }
+  JOB_SOURCE="job.sh"
+fi
+WORKDIR="${WORKDIR:-.}" ENV_NAME="${ENV_NAME:-sid-search}"
 
 # ---------------------------------------------------------------------------
 # Parent: validate everything up front (errors show up in your terminal, not in a
@@ -68,9 +86,14 @@ if [ -z "${RUN_JOB_CHILD:-}" ]; then
   fi
 
   export RUN_JOB_CHILD=1 RUN_JOB_NAME="$NAME" RUN_JOB_STAMP="$(date +%Y%m%d-%H%M%S)"
+  export RUN_JOB_SOURCE="$JOB_SOURCE"
   OUT="$REPO/logs/${RUN_JOB_STAMP}_${NAME}.out"
   ERR="$REPO/logs/${RUN_JOB_STAMP}_${NAME}.err"
   mkdir -p "$REPO/logs"
+  # Archive the job.sh that defined this run (with its comments) next to its logs.
+  if [ "$JOB_SOURCE" = "job.sh" ]; then
+    cp "$JOB_FILE" "$REPO/logs/${RUN_JOB_STAMP}_${NAME}.job.sh"
+  fi
 
   if [ "$FG" -eq 1 ]; then
     exec "$SELF" -C "$WORKDIR" -n "$NAME" -e "$ENV_NAME" -- "${CMD[@]}"
@@ -118,6 +141,7 @@ git_state() {  # <dir> -> "<short sha> (clean|dirty)"
   echo "host:       $(hostname)    pid: $$"
   echo "cwd:        $PWD"
   printf 'command:   '; printf ' %q' "${CMD[@]}"; echo
+  echo "defined in: ${RUN_JOB_SOURCE:-command line}$([ "${RUN_JOB_SOURCE:-}" = job.sh ] && echo " (copy: logs/${RUN_JOB_STAMP}_${NAME}.job.sh)")"
   echo "sid-search: $(git_state "$REPO")"
   echo "KuaiSearch: $(git_state "$REPO/external/KuaiSearch")  base 88a545d"
   echo "conda env:  $ENV_NAME ($(python --version 2>&1))"

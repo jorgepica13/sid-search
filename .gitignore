@@ -12,3 +12,5 @@ __pycache__/
 
 # logs de scripts/run_job.sh
 logs/
+# job definition for runbg (template: scripts/job.example.sh)
+/job.sh
