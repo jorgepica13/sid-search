@@ -1,0 +1,17 @@
+file: external/KuaiSearch/recall/data/embeddings/item_emb_512.npy  13,586,673,792 B  sha256 d74f57f35ee4efb50b078384683b54e685b0bafa0eafbd1b5ed29e2031d8eac0
+shape (6634118, 512)  dtype float32   corpus lines 6,634,118   match True
+rows with NaN: 0
+L2 norm min / mean / max: 1.000000 / 1.000000 / 1.000000
+
+independent re-encode of 2003 rows (seed 0): cosine min 1.000000  mean 1.000000  max |diff| 2.09e-07
+control, row i vs title of a different sampled row: cosine mean 0.3624
+identical-title groups checked: 1000 (of 662,742)   max |diff| within group: 1.49e-07
+
+3 rows (row | item_id | title | first 6 dims):
+  0 | 3359347 | 【香榭丽舍】高级静奢风法式长款遮肉显瘦进口貂皮大衣 | [0.01119999960064888, 0.013399999588727951, -0.031599998474121094, 0.008799999952316284, -0.010900000110268593, -0.07590000331401825]
+  1 | 5096459 | 福利金钻绒床边地毯防尘免洗 | [0.014800000004470348, 0.03779999911785126, 0.02199999988079071, 0.008500000461935997, 0.029100000858306885, -0.06509999930858612]
+  2 | 5935061 | 三莎夏季舞蹈鞋女式网面广场舞蹈 | [0.04190000146627426, 0.08190000057220459, -0.004399999976158142, 0.039500001817941666, -0.01600000075995922, -0.0364999994635582]
+
+=== run
+  logs/20261110-114701_title_embedding_prepare.out: runtime 00:05:59, exit 0, peak RSS 33,629,140 kB (~33.6 GB)
+  config: BAAI/bge-small-zh-v1.5, torch_dtype=auto (fp32), batch_size=256, cuda:0, text = item_title only
