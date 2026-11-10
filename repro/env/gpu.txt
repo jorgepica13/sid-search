@@ -1,0 +1,11 @@
+# Captured 2026-11-10
+index, name, memory.total [MiB], driver_version
+0, NVIDIA GeForce RTX 5090, 32607 MiB, 580.126.09
+| NVIDIA-SMI 580.126.09             Driver Version: 580.126.09     CUDA Version: 13.0     |
+Cuda compilation tools, release 12.8, V12.8.93
+Build cuda_12.8.r12.8/compiler.35583870_0
+CPU cores: 28
+               total        used        free      shared  buff/cache   available
+Mem:            62Gi        11Gi       1,9Gi        30Mi        49Gi        51Gi
+/dev/nvme0n1p5  1,7T  461G  1,1T  30% /home
+6.8.0-147-generic
