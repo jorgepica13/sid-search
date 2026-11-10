@@ -1,0 +1,20 @@
+file: external/KuaiSearch/recall/data/train_dpr.json  138,768,347 B  sha256 44798728819d42d9a5f87f87f42747a6b5229f7d712df52a51ae0cb61f2a579f
+samples: 287,093   expected (train queries): 287,093
+keys per sample: {('negative_item', 'positive_item', 'query'): 287093}
+query text matches train.queries.tsv (in qrels order): 287,093/287,093
+positive_item == titles of qrels items, same order:    287,093/287,093
+positive texts: 663,423   expected qrel pairs: 663,423
+negatives per sample: {1: 287093}   total 287,093
+negatives whose title equals a positive's title: 0
+negatives whose title is shared by >1 corpus item: 95,597
+corpus: 6,634,118 items, 5,086,231 distinct titles, 662,742 titles shared by >1 item (2,210,629 items)
+
+3 samples:
+  {"query": "广场舞服装女高档洋气", "positive_item": [{"text": "2025爆款短款外套曳步舞时尚休闲宽松版富丽同款伞兵裤跳广场舞服"}, {"text": "2024新款拉丁舞上衣成人女长短袖夏秋季摩登舞交谊练功广场舞蹈服"}, {"text": "国标舞服装女成人新款广场舞水兵舞拉丁舞练功莫代尔舞蹈上衣长袖"}, "... +13"], "negative_item": [{"text": "其他物种正品黑金抄网头防刮钩黑坑竞技网头"}]}
+  {"query": "雅鹿正品官方旗舰店运动鞋", "positive_item": [{"text": "【飞珍优选】雅鹿 秋季真爆大底男女同款透气防滑耐磨运动鞋Y6602"}, {"text": "DM【现货秒发】雅鹿运动鞋男女情侣同款透气网面飞织鞋Y8360"}, {"text": "25969雅鹿贾卡春夏季运动鞋男女情侣款透气减震四季飞织鞋"}, "... +5"], "negative_item": [{"text": "性感辣妹网纱拼接短袖T恤女2025夏季新款百搭打底衫修身显瘦上衣"}]}
+  {"query": "拖鞋", "positive_item": [{"text": "厚底男士拖鞋2025夏季新款居家浴室防滑防臭踩屎感凉拖海边一字拖"}, {"text": "2025新款男士拖鞋人字拖男款外出耐穿居家用防滑防臭潮流厚沙滩鞋"}, {"text": "新款男士拖鞋夏季防滑耐磨人字拖男休闲简约软底踩屎感外穿"}, "... +1"], "negative_item": [{"text": "欧帝斯多层加厚不锈钢工具箱家用多功能五金折叠收纳箱汽修车载D"}]}
+
+=== run
+  20261110-114350_build_dpr_usr_bin_time_v_python.out: runtime 00:00:59, exit 0, peak RSS 16,004,472 kB (~16 GB, /usr/bin/time -v)
+  printed: Loaded 287093 queries / qrels for 287093 / 6634118 documents / Built 287093 QA samples
+  config: NUM_NEG_PER_QUERY=1, random.seed(42), max_pos_per_query=None, train split only
