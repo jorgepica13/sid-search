@@ -1,0 +1,31 @@
+=== train
+  queries: output 287,093  expected 287,093  same qids True  same text 287,053/287,093
+  qrels:   output 663,423 pairs  expected 663,423  identical sets 287,093/287,093
+  3 rows (qid | query | relevant item_ids, sorted):
+    1 | 广场舞服装女高档洋气 | [58, 63, 76, 80, 85, 92, 99, 100, 121, 122, 128, 136, 143, 157, 163, 213]
+    2 | 雅鹿正品官方旗舰店运动鞋 | [259, 277, 297, 318, 323, 325, 326, 330]
+    3 | 拖鞋 | [464, 467, 469, 487]
+=== test
+  queries: output 8,468  expected 8,468  same qids True  same text 8,467/8,468
+  qrels:   output 18,805 pairs  expected 18,805  identical sets 8,468/8,468
+  3 rows (qid | query | relevant item_ids, sorted):
+    268853 | 早教音乐播放器可以自己下载音乐 | [3982018]
+    268859 | 女款风衣 | [121806, 370863]
+    268917 | 涂层裤女新款 | [203527, 716991, 788035, 3984972, 3984975, 3984989, 3984991, 3984998, 3985000]
+
+=== query text mismatches (41 = 40 train + 1 test): all expected
+  process.py write_queries() replaces '\t' and '\n' with ' ' to keep the TSV valid.
+  Raw queries involved: 35 with '\n', 2 with '\t', 4 with both. Example:
+    6016  raw='cleanfit灰色高领开衫毛衣男款秋季内搭\n衣夹克美式针织衫外套潮三条杠'
+          tsv='cleanfit灰色高领开衫毛衣男款秋季内搭 衣夹克美式针织衫外套潮三条杠'
+  Not a reproduction issue: whitespace is a token separator for jieba/BM25 anyway (deduction).
+
+=== run
+  logs/20261110-114203_process.out: runtime 00:00:03, exit 0
+  printed: Train queries 287093 / Train qrels sessions 287093 / Test queries 8468 / Test qrels sessions 8468
+  outputs (external/KuaiSearch/recall/data/, gitignored):
+    train.queries.tsv  287,093 lines  7,675,132 B   format: qid \t query
+    train.qrels.tsv    663,423 lines 12,638,850 B   format: qid \t Q0 \t item_id \t 1
+    test.queries.tsv     8,468 lines    227,019 B
+    test.qrels.tsv      18,805 lines    366,869 B
+  train/test qid overlap: 0. rel values: all 1.
