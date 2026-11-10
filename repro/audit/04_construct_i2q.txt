@@ -1,0 +1,16 @@
+file: external/KuaiSearch/recall/data/docTquery_train_data.jsonl  120,242,707 B  sha256 52370251a724e92684fa06eb2c8f1ed0069a6b92cc05e223c419e47e6c9f30de
+lines: 663,423   expected (positives in train_dpr.json): 663,423
+identical line by line: 663,423/663,423
+keys: {('item', 'query'): 663423}
+all items start with prompt prefix: True
+distinct (query, item) pairs: 592,620   duplicated pairs: 44,928 (115,731 lines)
+distinct queries: 162,906   distinct items: 421,495
+
+3 rows:
+  {"query": "广场舞服装女高档洋气", "item": "为下面的商品标题生成一个用户搜索query：2025爆款短款外套曳步舞时尚休闲宽松版富丽同款伞兵裤跳广场舞服"}
+  {"query": "广场舞服装女高档洋气", "item": "为下面的商品标题生成一个用户搜索query：2024新款拉丁舞上衣成人女长短袖夏秋季摩登舞交谊练功广场舞蹈服"}
+  {"query": "广场舞服装女高档洋气", "item": "为下面的商品标题生成一个用户搜索query：国标舞服装女成人新款广场舞水兵舞拉丁舞练功莫代尔舞蹈上衣长袖"}
+
+=== run
+  20261110-114601_construct_i2q_usr_bin_time_v_python.out: runtime 00:00:03, exit 0, peak RSS 858,692 kB
+  printed: input samples 287093 / output lines 663423
