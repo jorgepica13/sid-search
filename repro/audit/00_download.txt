@@ -1,0 +1,26 @@
+# Phase 0.4 — KuaiSearch Lite download, 2026-11-10
+# Source: huggingface.co/datasets/benchen4395/KuaiSearch @ 16f555af360f6a86209f60eb1f12462f9e25be2c
+# Verified: local sha256 + size == HF LFS oid + size for every file
+
+## sha256  path
+5c04e031324a37636afb2f822a4d862378d7f54eada93875d686fa8f31bd2621  items_lite/train.jsonl
+8949ed6b5cf685bb69067710ac70da12fd7999f66e66bafea4b9d8d78bfefe8a  recall_lite/train.jsonl
+b26c79a3ae6fde4aadc756c7b9eda9f6dcc6e112b725db603def868ab9f9c720  relevance/train.jsonl
+9853a69555ae52508200ce7855502fa52ad2e1875662193091b9993005f29554  users_lite/train.jsonl
+
+## bytes  lines  path
+2789868956  6634118  items_lite/train.jsonl
+257794992  555553  recall_lite/train.jsonl
+15827789  46422  relevance/train.jsonl
+13395477  102086  users_lite/train.jsonl
+
+## download log
+downloaded items_lite/train.jsonl (2789868956 B) in 244s
+downloaded recall_lite/train.jsonl (257794992 B) in 24s
+downloaded relevance/train.jsonl (15827789 B) in 1s
+downloaded users_lite/train.jsonl (13395477 B) in 2s
+OK   items_lite/train.jsonl
+OK   recall_lite/train.jsonl
+OK   relevance/train.jsonl
+OK   users_lite/train.jsonl
+total 273s; all_ok=1
