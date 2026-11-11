@@ -1,0 +1,26 @@
+# DPR-SDE, Phase 2 hypothesis test: emulate 8 GPUs x 64 on 1 GPU.
+# = external/KuaiSearch/recall/dpr/config/train_dpr_nq.yaml with ONLY these changes:
+#   per_device_train_batch_size 64 -> 512   (in-batch negatives 512 queries x 1024 docs)
+#   per_device_eval_batch_size  64 -> 512   (dev loss with the same negatives, as their all_gather validate)
+#   gradient_checkpointing: true            (patch 3; same fp32 math, measured grad rel diff 5e-8)
+#   save_dir ./model_signle -> ./model_signle/bs512   (keep run 1 checkpoint; dir ignored by patch 2)
+# Unchanged on purpose: lr, warmup_steps 1237 (= 2.2 epochs at 556 steps/epoch), epochs, patience, seed.
+## data
+train_file: recall/data/train_dpr.json
+save_dir: ./model_signle/bs512
+
+## training
+base_model: google-bert/bert-base-chinese
+per_device_train_batch_size: 512
+per_device_eval_batch_size: 512
+adam_eps: 1.0e-8
+weight_decay: 0.0
+max_grad_norm: 2.0
+lr: 2.0e-5
+warmup_steps: 1237
+max_train_epochs: 40
+gradient_accumulation_steps: 1
+patience: 2
+seed: 42
+max_length: 64
+gradient_checkpointing: true
