@@ -1,0 +1,32 @@
+code strings unique (code -> item is a bijection): True
+file item_text_codes.json: 878,921,912 B  sha256 c8f69091f09d03cc942d62f5faea4a6be865a560fa3f59d3bd4b323b5767547f
+file query_item_code_train.json: 49,218,675 B  sha256 af7a0f0258383f0d48159c2f57f5d33f7418bca365d7f8bbef0a38e76eec8e60
+file query_item_code_test.json: 977,466 B  sha256 93c9adc5da6612da3aa94778b2582ffae373374aba25cf5ea750dadcb589c564
+
+=== item_text_codes.json: 6,634,118 records (corpus 6,634,118)  text==title_i and output==item_code[i]: 6,634,118/6,634,118
+  keys {('output', 'text'): 6634118}   (no item_id field: row order is the link)
+
+=== query_item_code_train.json: 663,423 records (qrel lines 663,423)  identical to expected, in order: 663,423/663,423
+  output code maps back to the qrel item_id: 663,423/663,423
+  distinct (query text, code) pairs: 610,702   distinct query texts: 162,915   distinct codes: 454,589
+
+=== query_item_code_test.json: 8,468 records (test qids 8,468)  identical to expected, in order: 8,468/8,468
+  codes total 18,805 (qrel lines 18,805)
+  distinct query texts: 6,845; texts appearing in >1 record: 896 (2,519 records)  <- no qid in the file: same text = separate records
+  test relevant codes with dup > 0: 13,899/18,805
+
+3 records of each:
+  item  {"text": "【香榭丽舍】高级静奢风法式长款遮肉显瘦进口貂皮大衣", "output": "481 12 494 0"}
+  item  {"text": "福利金钻绒床边地毯防尘免洗", "output": "209 191 223 0"}
+  item  {"text": "三莎夏季舞蹈鞋女式网面广场舞蹈", "output": "304 329 370 0"}
+  train {"text": "广场舞服装女高档洋气", "output": "329 218 208 3"}
+  train {"text": "广场舞服装女高档洋气", "output": "329 501 329 1"}
+  train {"text": "广场舞服装女高档洋气", "output": "329 255 92 0"}
+  test  {"text": "早教音乐播放器可以自己下载音乐", "output": ["3 112 207 2"]}
+  test  {"text": "女款风衣", "output": ["117 243 354 6", "472 169 495 0"]}
+  test  {"text": "涂层裤女新款", "output": ["346 308 136 0", "278 436 9 0", "371 128 147 1", "250 501 297 0", "371 318 366 2", "442 128 234 0", "371 53 303 0", "346 490 250 0", "371 318 9 1"]}
+
+=== run
+  20261110-235741_process4gr.out: runtime 00:00:40, exit 0, peak RSS 5,116,456 kB (~5.1 GB)
+  printed: train Total 663423 / Written 663423 / skipped 0,0,0; test Total 18805 / Written 8468 / skipped 0,0,0
+  format: JSON arrays with indent=2 (not jsonl), ensure_ascii=False
