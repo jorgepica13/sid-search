@@ -5,7 +5,7 @@ Criterio de reproducido: ±5% relativo en R@10.
 | Método | R@10 paper | R@10 nuestro | Δ | HR@10 paper | HR@10 nuestro | Δ |
 |---|---|---|---|---|---|---|
 | BM25 | 0.0706 | 0.0686 | −2.8% ✓ | 0.1001 | 0.0985 | −1.6% |
-| DPR-SDE | 0.0826 | | | 0.1210 | | |
+| DPR-SDE | 0.0826 | 0.0753 | −8.8% ✗ | 0.1210 | 0.1101 | −9.0% |
 | DSI | 0.0623 | | | 0.0965 | | |
 | LTRGR | 0.0688 | | | 0.1049 | | |
 
@@ -16,3 +16,8 @@ Criterio de reproducido: ±5% relativo en R@10.
   Todas las métricas quedan entre un 1.6% y un 3.5% por debajo del paper.
   El 61% de las queries tiene un empate de score entre los rangos 10 y 11; solo el orden de desempate mueve
   R@10 entre 0.0625 y 0.0768 (medido dentro del top-100), un margen más ancho que el criterio de ±5%.
+- **DPR-SDE** (`logs/20261111-001652_dpr_sde.out`, sid-search `c3ae66f`, KuaiSearch `6a7f5e4`; auditoría `repro/audit/09_dpr_sde.txt`).
+  1 GPU, batch 64, 1 semilla, early stop en la época 7 (mejor modelo: época 5).
+  R@20 0.1153 (−10.8%), HR@20 0.1625 (−10.4%), R@50 0.1840 (−11.5%), HR@50 0.2504 (−9.6%). **No reproduce.**
+  Con el orden de empates más favorable R@10 llega a 0.0777 (−5.9%), así que los empates no explican la diferencia.
+  Hipótesis principal (deducción): negativos in-batch, 64×128 con 1 GPU frente a 512×1024 si ellos usaron 8 GPUs.

@@ -1,0 +1,40 @@
+doc embeddings (6634118, 768) float32, ids (6634118,), first ids ['3359347', '5096459', '5935061']
+exact GPU search: 61 s
+
+metric        recomp.   theirs    paper  Δ vs paper   tie range
+recall@10      0.0747   0.0753   0.0826       -9.6%   [0.0722, 0.0777]
+hr@10          0.1092   0.1101   0.1210       -9.7%   
+recall@20      0.1150   0.1153   0.1293      -11.1%   [0.1126, 0.1180]
+hr@20          0.1618   0.1625   0.1814      -10.8%   
+recall@50      0.1834   0.1840   0.2079      -11.8%   [0.1818, 0.1855]
+hr@50          0.2495   0.2504   0.2769       -9.9%   
+recall@100     0.2537   0.2542      nan               
+hr@100         0.3322   0.3328      nan               
+queries with an exact score tie across rank 10/11: 1,922 (22.7%)
+queries with an exact score tie across rank 20/21: 1,964 (23.2%)
+queries with an exact score tie across rank 50/51: 2,194 (25.9%)
+
+3 queries (qid | query | relevant | top-5 with score, * = relevant):
+  268853 | 早教音乐播放器可以自己下载音乐 | ['3982018'] | 5070218:352.34, 3412871:352.34, 3818783:352.34, 6508609:352.24, 321836:352.13
+  268859 | 女款风衣 | ['121806', '370863'] | 2918852:348.52, 4277349:348.17, 4653746:348.06, 4151473:347.90, 457490:347.89
+  268917 | 涂层裤女新款 | ['203527', '3984972', '3984975', '3984989', '3984991', '3984998', '3985000', '716991', '788035'] | 3225079:354.97, 3360441:353.81, 4424300:352.68, 6095098:351.29, 5819826:351.21
+
+=== run (logs/20261111-001652_dpr_sde.out)
+  runtime 02:12:26, exit 0, peak RSS 61,535,520 kB (~61.5 GB of 62 GB: close to OOM; swap ~unused)
+  SDE confirmed: query_encoder and doc_encoder model.safetensors identical (sha256 c54a7a4d50b56210...)
+  train: 284,223 train / 2,870 dev (1% random_split seed 42), batch 64, 4,441 steps/epoch, ~5.6 min/epoch
+    val_loss: e1 0.3692, e2 0.3499, e3 0.3110, e4 0.3108, e5 0.2954 (best), e6 0.3218, e7 0.3281 -> early stop at 7
+    (linear LR schedule is over 40 epochs: the best model is taken with LR still ~0.88 x peak)
+  embed: 6,634,118 x 768 fp32 (doc_embedding/corpus_shard_0.npy, 20.4 GB) ~1 h 08 min
+  eval: faiss IndexFlatIP on CPU, search 1,447 s
+  their printed metrics: R@10 0.0753 HR@10 0.1101 R@20 0.1153 HR@20 0.1625 R@50 0.1840 HR@50 0.2504
+
+=== notes
+  - Recomputation (GPU exact IP, fp32 no TF32) differs from their faiss result by <=0.0009: tie/near-tie order.
+  - Not reproduced: R@10 -8.8% (their eval). All metrics -9% to -12%. Even the most favourable exact-tie
+    order gives R@10 0.0777 (-5.9%): ties do not explain the gap.
+  - Main hypothesis (deduction): in-batch negatives. 1 GPU x 64 = 64 queries vs 128 docs; their code is
+    built for multi-GPU all_gather (8 x 64 would be 512 vs 1024). GPU count is not reported in the paper.
+    Secondary: paper averages 3 seeds, we ran 1.
+  - Feasibility measured: batch 512 + gradient checkpointing on 1 GPU (fp32): 729 ms/step, 6.2 GiB peak,
+    556 steps/epoch -> 6.8 min/epoch.
