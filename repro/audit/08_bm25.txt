@@ -1,0 +1,37 @@
+rankings: 8,468 queries   qrels: 8,468   same qid set: True
+results per query: 0 -> 28   <100 -> 153   =100 -> 8,315
+scores sorted descending in every ranking: True
+
+metric           ours   theirs    paper    Δ rel   tie range within top-100
+recall@10      0.0686   0.0686   0.0706    -2.8%   [0.0625, 0.0768]
+hr@10          0.0985   0.0985   0.1001    -1.6%   
+recall@20      0.1014   0.1014   0.1037    -2.3%   [0.0941, 0.1089]
+hr@20          0.1402   0.1402   0.1427    -1.8%   
+recall@50      0.1509   0.1509   0.1564    -3.5%   [0.1424, 0.1594]
+hr@50          0.2030   0.2030   0.2088    -2.8%   
+recall@100     0.2006   0.2006      nan            [0.2006, 0.2006]
+hr@100         0.2622   0.2622      nan            
+queries with a score tie across rank 10/11: 5,177 (61.1%)
+queries with a score tie across rank 20/21: 5,895 (69.6%)
+queries with a score tie across rank 50/51: 6,851 (80.9%)
+queries with a score tie across rank 100/101: 0 (0.0%)
+
+3 queries (qid | query | relevant | top-5 retrieved with score, * = relevant):
+  268853 | 早教音乐播放器可以自己下载音乐 | ['3982018'] | 3714618:35.81, 1499731:35.81, 4434416:32.48, 4981232:32.47, 3755303:32.27
+  268859 | 女款风衣 | ['121806', '370863'] | 2433845:14.99, 5630916:14.37, 366328:13.88, 2897455:13.80, 4318430:13.80
+  268917 | 涂层裤女新款 | ['203527', '3984972', '3984975', '3984989', '3984991', '3984998', '3985000', '716991', '788035'] | 4183905:16.82, 4839957:16.82, 203414:16.82, 4183915:16.40, 6095085:16.40
+
+=== notes
+  - "tie across rank 100/101: 0" is not observable: only the top-100 is returned.
+  - Tie range: for queries whose score at rank k equals rank k+1, R@k is recomputed with the
+    relevant items of the tied block placed first (upper) or last (lower). Only ties inside the
+    retrieved top-100 are seen, so the true range can be wider.
+  - Tie-breaking alone spans R@10 in [0.0625, 0.0768] (-11% / +9% around 0.0686), which contains
+    the paper's 0.0706: the ±5% criterion is narrower than the variability caused by tie order.
+    The -2.8% gap can therefore not be attributed (ties vs jieba/NLTK/numpy versions) - deduction.
+  - 28 queries return no results (all query terms removed or out of vocabulary); they count as 0.
+
+=== run
+  logs/20261111-000315_bm25.out: runtime 00:05:07, exit 0, peak RSS 5,301,304 kB (~5.3 GB)
+  Building TDF matrix 02:53 (6,634,118 docs); inverted index 922,066 terms; retrieval+save 306 s total
+  index: data/retriv/collections/kuaisearch (docs.jsonl 693,931,559 B, sr_state.npz 302,929,426 B)
