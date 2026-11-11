@@ -1,0 +1,38 @@
+model external/KuaiSearch/model_signle/bs512/best/query_encoder  embeddings external/KuaiSearch/doc_embedding/bs512  out data/runs/dpr_sde_bs512
+doc embeddings (6634118, 768) float32, ids (6634118,), first ids ['3359347', '5096459', '5935061']
+exact GPU search: 33 s
+
+metric        recomp.   theirs    paper  Δ vs paper   tie range
+recall@10      0.0846   0.0852   0.0826       +2.4%   [0.0825, 0.0873]
+hr@10          0.1225   0.1240   0.1210       +1.2%   
+recall@20      0.1301   0.1297   0.1293       +0.6%   [0.1271, 0.1330]
+hr@20          0.1803   0.1816   0.1814       -0.6%   
+recall@50      0.2081   0.2080   0.2079       +0.1%   [0.2055, 0.2100]
+hr@50          0.2794   0.2789   0.2769       +0.9%   
+recall@100     0.2832   0.2830      nan               
+hr@100         0.3651   0.3650      nan               
+queries with an exact score tie across rank 10/11: 1,868 (22.1%)
+queries with an exact score tie across rank 20/21: 1,994 (23.5%)
+queries with an exact score tie across rank 50/51: 2,115 (25.0%)
+
+3 queries (qid | query | relevant | top-5 with score, * = relevant):
+  268853 | 早教音乐播放器可以自己下载音乐 | ['3982018'] | 5796367:336.52, 5158110:336.52, 6508609:336.40, 3670065:336.15, 5796348:336.15
+  268859 | 女款风衣 | ['121806', '370863'] | 2918852:334.37, 5675748:334.28, 5558494:334.00, 4864628:333.91, 2902088:333.86
+  268917 | 涂层裤女新款 | ['203527', '3984972', '3984975', '3984989', '3984991', '3984998', '3985000', '716991', '788035'] | 3225079:340.17, 6095091:339.17, 6067788:338.91, 6095098:338.62, 3985001:338.20
+
+=== run (logs/20261111-085916_dpr_sde_bs512.out)
+  runtime 03:03:39, exit 0, peak RSS 59,605,752 kB (~59.6 GB of 62)
+  config: configs/dpr_sde_bs512.yaml (= their yaml + batch 512 train/eval + gradient_checkpointing, patch 3 b12e733)
+  SDE confirmed: query_encoder and doc_encoder model.safetensors identical (sha256 c61d9d6e49df76d9...)
+  train: 556 steps/epoch, ~7.5 min/epoch (1.23 it/s); 12 epochs in 1:30:10
+    val_loss (dev in-batch negatives 512x1024, not comparable with run 1's 64x128):
+    e1 1.1937 e2 1.0875 e3 0.9869 e4 0.9478 e5 0.9130 e6 0.9327 e7 0.8906 e8 0.8927 e9 0.8806
+    e10 0.8755 (best) e11 0.8811 e12 0.8803 -> early stop at 12
+  embed ~1 h 10 min, faiss CPU search 1,447 s
+
+=== conclusion
+  Reproduced: R@10 0.0852 (their eval) vs 0.0826 (+3.1%); recomputation 0.0846 (+2.4%).
+  R@20/R@50/HR@20/HR@50 within +-1% of the paper.
+  Run 1 -> run 2 changes only batch size (64 -> 512, +checkpointing with identical math):
+  R@10 0.0753 -> 0.0852 (+13%). Supports the in-batch-negatives hypothesis: the paper's DPR numbers are
+  consistent with a total batch of 512 (e.g. 8 GPUs x 64) - deduction, GPU count still not reported.

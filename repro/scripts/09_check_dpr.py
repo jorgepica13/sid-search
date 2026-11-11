@@ -6,20 +6,28 @@ over their saved doc embeddings (doc_embedding/corpus_shard_0.npy), recomputes R
 saves rankings, and measures ties (identical titles -> identical doc embeddings).
 
 Usage (from the sid-search root):
-    python -I repro/scripts/09_check_dpr.py | tee repro/audit/09_dpr_sde.txt
+    python -I repro/scripts/09_check_dpr.py [MODEL_DIR EMB_DIR OUT_DIR JOB_LOG] | tee repro/audit/09_dpr_sde.txt
+    defaults = run 1 (batch 64). Paths relative to external/KuaiSearch except OUT_DIR and JOB_LOG.
 """
-import json, os, time
+import json, os, re, sys, time
 from collections import defaultdict
 import numpy as np
 import torch
 from transformers import BertModel, BertTokenizer
 
 KS = "external/KuaiSearch"
-OUT = "data/runs/dpr_sde"
+A = sys.argv[1:] + [None] * 4
+MODEL_DIR = A[0] or "model_signle/best"
+EMB_DIR = A[1] or "doc_embedding"
+OUT = A[2] or "data/runs/dpr_sde"
+LOG = A[3]
 PAPER = {"recall@10": 0.0826, "hr@10": 0.1210, "recall@20": 0.1293, "hr@20": 0.1814,
          "recall@50": 0.2079, "hr@50": 0.2769}
 THEIRS = {"recall@10": 0.0753, "hr@10": 0.1101, "recall@20": 0.1153, "hr@20": 0.1625,
           "recall@50": 0.1840, "hr@50": 0.2504, "recall@100": 0.2542, "hr@100": 0.3328}
+if LOG:  # their printed metrics from the job log
+    txt = open(LOG, encoding="utf-8", errors="replace").read()
+    THEIRS = {k: float(v) for k, v in re.findall(r"^((?:recall|hr)@\d+): ([\d.]+)$", txt, re.M)}
 CUTS, K = [10, 20, 50, 100], 100
 torch.backends.cuda.matmul.allow_tf32 = False
 
@@ -35,7 +43,8 @@ for l in open(f"{KS}/recall/data/test.qrels.tsv", encoding="utf-8"):
         qrels[qid].add(doc)
 qids = list(queries)
 
-enc_dir = f"{KS}/model_signle/best/query_encoder"
+enc_dir = f"{KS}/{MODEL_DIR}/query_encoder"
+print(f"model {enc_dir}  embeddings {KS}/{EMB_DIR}  out {OUT}")
 tok = BertTokenizer.from_pretrained(enc_dir)
 qe = BertModel.from_pretrained(enc_dir, add_pooling_layer=False).cuda().eval()
 Q = []
@@ -48,8 +57,8 @@ Q = torch.cat(Q)                                  # [8468, 768] fp32
 del qe; torch.cuda.empty_cache()
 
 t = time.time()
-E = np.load(f"{KS}/doc_embedding/corpus_shard_0.npy", mmap_mode="r")
-ids = np.load(f"{KS}/doc_embedding/corpus_shard_0_ids.npy")
+E = np.load(f"{KS}/{EMB_DIR}/corpus_shard_0.npy", mmap_mode="r")
+ids = np.load(f"{KS}/{EMB_DIR}/corpus_shard_0_ids.npy")
 print(f"doc embeddings {E.shape} {E.dtype}, ids {ids.shape}, first ids {ids[:3].tolist()}")
 best_s = torch.full((len(qids), K), -float("inf"), device="cuda")
 best_i = torch.zeros((len(qids), K), dtype=torch.long, device="cuda")

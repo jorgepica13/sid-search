@@ -38,3 +38,7 @@ queries with an exact score tie across rank 50/51: 2,194 (25.9%)
     Secondary: paper averages 3 seeds, we ran 1.
   - Feasibility measured: batch 512 + gradient checkpointing on 1 GPU (fp32): 729 ms/step, 6.2 GiB peak,
     556 steps/epoch -> 6.8 min/epoch.
+
+=== cleanup 2026-11-11
+  run 1 doc embeddings (doc_embedding/corpus_shard_0{,_ids}.npy, 20.4 GB) deleted after audit;
+  rankings kept in data/runs/dpr_sde/, model kept in model_signle/best/.
