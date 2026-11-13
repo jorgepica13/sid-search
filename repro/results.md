@@ -6,7 +6,7 @@ Criterio de reproducido: ±5% relativo en R@10.
 |---|---|---|---|---|---|---|
 | BM25 | 0.0706 | 0.0686 | −2.8% ✓ | 0.1001 | 0.0985 | −1.6% |
 | DPR-SDE | 0.0826 | 0.0852 | +3.1% ✓ | 0.1210 | 0.1240 | +2.5% |
-| DSI | 0.0623 | | | 0.0965 | | |
+| DSI | 0.0623 | 0.0634 | +1.7% ✓ | 0.0965 | 0.0979 | +1.4% |
 | LTRGR | 0.0688 | | | 0.1049 | | |
 
 ## Notas
@@ -26,3 +26,6 @@ Criterio de reproducido: ±5% relativo en R@10.
   R@20 0.1297 (+0.3%), HR@20 0.1816 (+0.1%), R@50 0.2080 (+0.05%), HR@50 0.2789 (+0.7%). Early stop en la época 12 (mejor modelo: época 10).
   De la ejecución 1 a la 2, R@10 pasa de 0.0753 a 0.0852: los resultados del paper son compatibles con un batch total de 512.
   La fila de la tabla es la de la ejecución 2.
+- **DSI** (`logs/20261111-154005_dsi.out`, sid-search `68614f4`, KuaiSearch `6e020a9`; auditoría `repro/audit/11_dsi.txt`).
+  1 GPU, 128 × 8 pasos de acumulación = batch total 1,024 (parche 4), 30/30 épocas, 35 h 52 min. **Reproduce.**
+  R@20 0.0887 (−0.6%), HR@20 0.1364 (+1.5%), R@50 0.1345 (−1.7%), HR@50 0.1998 (−1.0%).

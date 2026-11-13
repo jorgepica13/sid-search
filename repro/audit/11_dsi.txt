@@ -1,0 +1,33 @@
+trie 6,634,118 codes (160 s)
+[{'text': '早教音乐播放器可以自己下载音乐', 'output': ['3 112 207 2']}, {'text': '女款风衣', 'output': ['117 243 354 6', '472 169 495 0']}, {'text': '涂层裤女新款', 'output': ['346 308 136 0', '278 436 9 0', '371 128 147 1', '250 501 297 0', '371 318 366 2', '442 128 234 0', '371 53 303 0', '346 490 250 0', '371 318 9 1']}, {'text': '秋季高端小衫新款', 'output': ['474 474 92 0', '462 365 410 0']}, {'text': '汽车手机支架', 'output': ['46 284 373 7', '46 450 283 1']}]
+test 8468
+decoded 8,468 test records in 241 s; invalid codes 0; duplicate codes within a ranking 0
+
+metric       recomp.   theirs    paper  Δ theirs vs paper
+Recall@10     0.0626   0.0634   0.0623              +1.7%
+Hits@10       0.0973   0.0979   0.0965              +1.4%
+Recall@20     0.0884   0.0887   0.0892              -0.6%
+Hits@20       0.1364   0.1364   0.1344              +1.5%
+Recall@50     0.1338   0.1345   0.1369              -1.7%
+Hits@50       0.1993   0.1998   0.2018              -1.0%
+
+3 records (query | relevant codes | top-5 decoded, * = relevant):
+  早教音乐播放器可以自己下载音乐 | ['3 112 207 2'] | 29 296 460 0, 29 296 460 1, 29 79 395 32, 29 79 395 23, 29 79 395 43
+  女款风衣 | ['117 243 354 6', '472 169 495 0'] | 208 485 74 0, 472 233 304 0, 472 233 304 1, 208 485 74 1, 208 485 197 0
+  涂层裤女新款 | ['250 501 297 0', '278 436 9 0', '346 308 136 0', '346 490 250 0', '371 128 147 1', '371 318 366 2', '371 318 9 1', '371 53 303 0', '442 128 234 0'] | 501 0 9 0, 501 0 9 1, 371 346 9 0, 501 0 9 2, 501 0 9 3
+
+=== run (logs/20261111-154005_dsi.out)
+  runtime 35:51:59, exit 0, peak RSS 14,746,328 kB (main process; 8 dataloader workers ~2 GB private each)
+  1 GPU, per-device 128 x gradient_accumulation_steps 8 = total batch 1,024 (patch 4), 7,121 steps/epoch, 1.66 steps/s
+  30/30 epochs (no early stop): held-out query eval_loss 3.0519 (e1) -> 2.1478 (e30, best); only e26 slightly up
+  best_model = checkpoint-213630 (epoch 30). Their printed test metrics = DSI/best_model/test_metrics.json
+
+=== notes
+  - Reproduced: R@10 0.0634 vs 0.0623 (+1.7%); all metrics within -1.7% / +1.7% of the paper.
+  - Recomputation from best_model differs by <=0.0008 (beam order of near-tied hypotheses on GPU); recomputed R@10
+    0.0626 (+0.5% vs paper).
+  - 0 invalid codes and 0 duplicates in 8,468 x 50 decoded codes: the Trie constraint works as intended.
+  - Beams often spend slots on dedup-index variants of the same 3-code prefix (e.g. "29 296 460 0", "29 296 460 1").
+
+=== cleanup 2026-11-13
+  30 epoch checkpoints in DSI/ (~196 GB) deleted after audit; DSI/best_model (epoch 30, 2.2 GB) kept for LTRGR.
