@@ -1,4 +1,4 @@
-	Command being timed: "/home/jorgepica13/miniconda3/envs/sid-search/bin/python -I repro/scripts/01_counts.py data/raw"
+	Command being timed: "python -I repro/scripts/01_counts.py data/raw"
 	User time (seconds): 20.26
 	System time (seconds): 0.79
 	Percent of CPU this job got: 119%
