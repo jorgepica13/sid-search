@@ -1,0 +1,28 @@
+trie 6,634,118 codes (164 s)
+test 8468
+decoded 8,468 test records in 242 s; invalid codes 0; duplicate codes within a ranking 0
+
+metric       recomp.   theirs    paper  Δ theirs vs paper
+Recall@10     0.0674   0.0678   0.0688              -1.5%
+Hits@10       0.1043   0.1042   0.1049              -0.7%
+Recall@20     0.0960   0.0961   0.0986              -2.5%
+Hits@20       0.1453   0.1463   0.1477              -0.9%
+Recall@50     0.1439   0.1442   0.1501              -4.0%
+Hits@50       0.2113   0.2113   0.2184              -3.3%
+
+3 records (query | relevant codes | top-5 decoded, * = relevant):
+  早教音乐播放器可以自己下载音乐 | ['3 112 207 2'] | 29 296 460 0, 29 296 460 1, 29 178 367 0, 29 79 395 32, 29 79 395 23
+  女款风衣 | ['117 243 354 6', '472 169 495 0'] | 472 115 402 0, 472 233 304 0, 472 233 304 1, 208 485 74 0, 472 115 402 1
+  涂层裤女新款 | ['250 501 297 0', '278 436 9 0', '346 308 136 0', '346 490 250 0', '371 128 147 1', '371 318 366 2', '371 318 9 1', '371 53 303 0', '442 128 234 0'] | 501 0 9 0, 371 346 9 0, 501 0 9 1, 371 346 9 1, 501 0 9 2
+
+=== run (logs/20261113-084527_ltrgr.out)
+  runtime 06:48:58, exit 0, peak RSS 14,388,644 kB
+  = recall_gr.sh + --LTRGR_flag 1 (no LTRGR script in their repo), from DSI/best_model, mode 'rank'
+  1 GPU, 128 x gradient_accumulation_steps 8 = 1,024; 7,121 steps/epoch, 35,605 steps
+  5/5 epochs: held-out eval loss (rank loss incl. 1000 x gen) 2152.18, 2142.11, 2125.20, 2118.78, 2118.26 (best, e5)
+  best_model = checkpoint-35605
+
+=== notes
+  - Reproduced: R@10 0.0678 vs 0.0688 (-1.5%). HR within -0.7%/-3.3%; R@50 -3.9% (largest gap).
+  - Recomputation from best_model differs by <=0.0010; 0 invalid / 0 duplicate codes.
+  - DSI -> LTRGR: R@10 0.0634 -> 0.0678 (+6.9%); paper 0.0623 -> 0.0688 (+10.4%).

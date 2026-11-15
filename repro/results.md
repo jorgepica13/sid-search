@@ -7,7 +7,7 @@ Criterio de reproducido: ±5% relativo en R@10.
 | BM25 | 0.0706 | 0.0686 | −2.8% ✓ | 0.1001 | 0.0985 | −1.6% |
 | DPR-SDE | 0.0826 | 0.0852 | +3.1% ✓ | 0.1210 | 0.1240 | +2.5% |
 | DSI | 0.0623 | 0.0634 | +1.7% ✓ | 0.0965 | 0.0979 | +1.4% |
-| LTRGR | 0.0688 | | | 0.1049 | | |
+| LTRGR | 0.0688 | 0.0678 | −1.5% ✓ | 0.1049 | 0.1042 | −0.7% |
 
 ## Notas
 
@@ -29,3 +29,6 @@ Criterio de reproducido: ±5% relativo en R@10.
 - **DSI** (`logs/20261111-154005_dsi.out`, sid-search `68614f4`, KuaiSearch `6e020a9`; auditoría `repro/audit/11_dsi.txt`).
   1 GPU, 128 × 8 pasos de acumulación = batch total 1,024 (parche 4), 30/30 épocas, 35 h 52 min. **Reproduce.**
   R@20 0.0887 (−0.6%), HR@20 0.1364 (+1.5%), R@50 0.1345 (−1.7%), HR@50 0.1998 (−1.0%).
+- **LTRGR** (`logs/20261113-084527_ltrgr.out`, sid-search `86e0a54`, KuaiSearch `6e020a9`; auditoría `repro/audit/12_ltrgr.txt`).
+  `recall_gr.sh` + `--LTRGR_flag 1` (su repo no trae script para LTRGR) desde `DSI/best_model`, 128 × 8 = 1,024, 5/5 épocas, 6 h 49 min. **Reproduce.**
+  R@20 0.0961 (−2.5%), HR@20 0.1463 (−0.9%), R@50 0.1442 (−3.9%), HR@50 0.2113 (−3.3%).
