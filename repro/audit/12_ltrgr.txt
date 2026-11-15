@@ -26,3 +26,7 @@ Hits@50       0.2113   0.2113   0.2184              -3.3%
   - Reproduced: R@10 0.0678 vs 0.0688 (-1.5%). HR within -0.7%/-3.3%; R@50 -3.9% (largest gap).
   - Recomputation from best_model differs by <=0.0010; 0 invalid / 0 duplicate codes.
   - DSI -> LTRGR: R@10 0.0634 -> 0.0678 (+6.9%); paper 0.0623 -> 0.0688 (+10.4%).
+
+=== cleanup 2026-11-15
+  5 epoch checkpoints in LTRGR/ (~33 GB) deleted after audit; LTRGR/best_model kept
+  (model.safetensors identical to checkpoint-35605, sha256 cb6bddae5a041af8...).
